@@ -7,10 +7,10 @@ import { CreateUserDto } from './DTO/createUser.dto';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  // @Get()
-  // find(): Promise<User> {
-  //   return this.userService.getUser(userName);
-  // }
+  @Get()
+  find(userName): Promise<User> {
+    return this.userService.getUser(userName);
+  }
 
   @Post()
   create(@Body() userDto: CreateUserDto): void {

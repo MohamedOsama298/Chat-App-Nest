@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
@@ -13,6 +13,11 @@ import { UserService } from './user/user.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './user/schema/user.schema';
 import { AuthModule } from './auth/auth.module';
+import { Message, MessageSchema } from './message/schema/message.schema';
+import { UserMiddleware } from './middleware/user.middleware';
+import { ChatModule } from './chat/chat.module';
+import { Chat, ChatSchema } from './chat/schema/chat.schema';
+import { ChatController } from './chat/chat.controller';
 
 @Module({
   imports: [
@@ -25,9 +30,24 @@ import { AuthModule } from './auth/auth.module';
       { dbName: 'ChatApp' },
     ),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([{ name: Message.name, schema: MessageSchema }]),
+    MongooseModule.forFeature([{ name: Chat.name, schema: ChatSchema }]),
     AuthModule,
+    ChatModule,
   ],
-  controllers: [AppController, MessageController, UserController],
+  controllers: [
+    AppController,
+    MessageController,
+    UserController,
+    ChatController,
+  ],
   providers: [AppService, EventsGateway, MessageService, UserService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(UserMiddleware)
+      .exclude({ path: 'user', method: RequestMethod.POST })
+      .forRoutes('messages', 'user','chat');
+  }
+}
