@@ -8,7 +8,7 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Get()
-  find(userName): Promise<User> {
+  find(userName: string): Promise<User> {
     return this.userService.getUser(userName);
   }
 

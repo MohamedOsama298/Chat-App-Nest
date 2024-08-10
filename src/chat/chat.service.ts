@@ -3,6 +3,7 @@ import { CreateChatDTO } from './DTO/createChat.dto';
 import { Chat } from './schema/chat.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { GetChatDTO } from './DTO/getChatDTO';
 
 @Injectable()
 export class ChatService {
@@ -12,7 +13,14 @@ export class ChatService {
     return this.chatModel.create(createChatDto);
   }
 
-  getUserChats(userName: string): Promise<Chat[]> {
-    return this.chatModel.find({ members: { $elemMatch: { $eq: userName } } });
+  async getUserChats(userName: string): Promise<GetChatDTO[]> {
+    let chats = [];
+    await this.chatModel
+      .find({ members: { $elemMatch: { $eq: userName } } })
+      .exec()
+      .then((result) => {
+        chats = result;
+      });
+    return chats;
   }
 }

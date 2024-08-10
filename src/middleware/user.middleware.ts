@@ -22,14 +22,10 @@ export class UserMiddleware implements NestMiddleware {
     }
     const token: string = authHeader.split(' ')[1];
     try {
-      console.log(this.jwtService.verify(token));
-
       const userName = this.jwtService.verify(token).userName;
       const user = await this.userService.getUser(userName);
       req.user = user;
-      console.log(user);
     } catch (err) {
-      console.log(err);
       res.status(401).send({ message: 'Invalid Token' });
     }
     next();

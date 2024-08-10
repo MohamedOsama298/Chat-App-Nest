@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
@@ -48,6 +53,6 @@ export class AppModule implements NestModule {
     consumer
       .apply(UserMiddleware)
       .exclude({ path: 'user', method: RequestMethod.POST })
-      .forRoutes('messages', 'user','chat');
+      .forRoutes('messages', 'user', 'chat');
   }
 }

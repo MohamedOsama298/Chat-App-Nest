@@ -10,15 +10,23 @@ export class MessageService {
   ) {}
   private readonly messages: Message[] = [];
 
-  getMessages(userId: string): Promise<Message[]> {
-    return this.messageModel.find({ sender: userId }).exec();
+  getMessagesPerChat(chatId: string): Promise<Message[]> {
+    return this.messageModel
+      .find({ chat: chatId })
+      .populate('sender', 'userName -_id')
+      .exec();
   }
 
-  async addMessage(message: string, id: string): Promise<Message> {
-    const createdUser = new this.messageModel({
+  async addMessage(
+    message: string,
+    id: string,
+    chatID: string,
+  ): Promise<Message> {
+    const newMessage = new this.messageModel({
       body: message,
       sender: id,
+      chat: chatID,
     });
-    return createdUser.save();
+    return newMessage.save();
   }
 }

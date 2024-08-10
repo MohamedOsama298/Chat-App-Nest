@@ -7,12 +7,12 @@ export class MessageController {
   constructor(private messageService: MessageService) {}
 
   @Get()
-  getMessages(@Req() req): Promise<Message[]> {
-    return this.messageService.getMessages(req.user._id);
+  getMessages(@Body() body): Promise<Message[]> {
+    return this.messageService.getMessagesPerChat(body.chatId);
   }
 
   @Post()
   addMessage(@Req() req, @Body() body): void {
-    this.messageService.addMessage(body.message, req.user._id);
+    this.messageService.addMessage(body.message, req.user._id, body.chatID);
   }
 }
