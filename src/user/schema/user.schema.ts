@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { hash } from 'bcrypt';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 @Schema()
 export class User extends Document {
@@ -9,6 +9,9 @@ export class User extends Document {
 
   @Prop()
   age: number;
+
+  @Prop({ type: [mongoose.Schema.Types.String], ref: 'User', default: [] })
+  friends: string[];
 
   @Prop({ required: true, maxlength: 25, minlength: 12 })
   password: string;

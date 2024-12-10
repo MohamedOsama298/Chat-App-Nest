@@ -12,7 +12,7 @@ export class MessageService {
 
   getMessagesPerChat(chatId: string): Promise<Message[]> {
     return this.messageModel
-      .find({ chat: chatId })
+      .find({ chat: chatId }, { chat: 0, __v: 0, updatedAt: 0 })
       .populate('sender', 'userName -_id')
       .exec();
   }

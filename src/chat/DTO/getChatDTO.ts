@@ -3,4 +3,5 @@ export class GetChatDTO {
   members: string[];
   type: string;
   _id: string;
+  updatedAt: any;
 }

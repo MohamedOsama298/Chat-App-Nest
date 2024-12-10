@@ -22,11 +22,26 @@ export class ChatController {
         const messages = await this.messagesService.getMessagesPerChat(
           chat._id,
         );
+        let updatedAt;
+        if (messages.length > 0) {
+          updatedAt = messages ? messages[messages.length - 1].createdAt : null;
+        } else {
+          updatedAt = chat.updatedAt;
+        }
         return {
           chatID: chat._id,
+          name: chat.name,
+          type: chat.type,
+          members: chat.members,
+          updatedAt: updatedAt,
           messages,
         };
       }),
+    );
+    chatsPopulated.sort((a, b) =>
+      Math.ceil(
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+      ),
     );
     return chatsPopulated;
   }

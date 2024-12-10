@@ -13,6 +13,12 @@ export class Message {
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Chat' })
   chat: Chat;
+
+  @Prop({ default: Date.now })
+  createdAt: Date;
+
+  @Prop({ default: Date.now })
+  updatedAt: Date;
 }
 
 export const MessageSchema = SchemaFactory.createForClass(Message);

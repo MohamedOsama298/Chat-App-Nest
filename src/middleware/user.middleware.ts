@@ -14,7 +14,6 @@ export class UserMiddleware implements NestMiddleware {
     private userService: UserService,
   ) {}
   async use(req, res: Response, next: NextFunction) {
-    console.log('Request...', req.headers);
     const authHeader: string = req.headers['authorization'];
 
     if (!authHeader) {

@@ -16,7 +16,29 @@ export class ChatService {
   async getUserChats(userName: string): Promise<GetChatDTO[]> {
     let chats = [];
     await this.chatModel
-      .find({ members: { $elemMatch: { $eq: userName } } })
+      .find(
+        { members: { $elemMatch: { $eq: userName } } },
+        {
+          name: {
+            $cond: {
+              if: { $eq: ['$type', 'Private'] },
+              then: {
+                $arrayElemAt: [
+                  {
+                    $filter: {
+                      input: '$members',
+                      as: 'member',
+                      cond: { $ne: ['$$member', userName] },
+                    },
+                  },
+                  0,
+                ],
+              },
+              else: '$name',
+            },
+          },
+        },
+      )
       .exec()
       .then((result) => {
         chats = result;

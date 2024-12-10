@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { Message } from './schema/message.schema';
 
@@ -6,9 +6,9 @@ import { Message } from './schema/message.schema';
 export class MessageController {
   constructor(private messageService: MessageService) {}
 
-  @Get()
-  getMessages(@Body() body): Promise<Message[]> {
-    return this.messageService.getMessagesPerChat(body.chatId);
+  @Get('')
+  getMessages(@Query() qr): Promise<Message[]> {
+    return this.messageService.getMessagesPerChat(qr.chatID);
   }
 
   @Post()
