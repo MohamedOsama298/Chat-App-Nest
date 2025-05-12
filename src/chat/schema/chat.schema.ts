@@ -9,8 +9,20 @@ export class Chat {
   @Prop({ required: true })
   name: string;
 
-  @Prop({ type: [mongoose.Schema.Types.String], ref: 'User' })
-  members: string[];
+  @Prop({
+    type: [
+      {
+        userName: {
+          type: mongoose.Schema.Types.String,
+          ref: 'User',
+          required: true,
+        },
+        lastSeen: { type: Date, default: null },
+      },
+    ],
+    required: true,
+  })
+  members: { user: mongoose.Schema.Types.ObjectId; lastSeen: Date }[];
 }
 
 export const ChatSchema = SchemaFactory.createForClass(Chat);

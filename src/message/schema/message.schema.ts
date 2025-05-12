@@ -8,6 +8,11 @@ export class Message {
   @Prop()
   body: string;
 
+  @Prop({
+    required: false,
+  })
+  imageUrl: string;
+
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   sender: User;
 

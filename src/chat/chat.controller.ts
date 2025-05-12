@@ -11,12 +11,16 @@ export class ChatController {
 
   @Post()
   createChat(@Req() req) {
+    if (req.user.userName) {
+      req.body.members.push(req.user.userName);
+    }
     this.chatService.create(req.body);
   }
 
   @Get('/user')
   async getUserChats(@Req() req) {
     const chats = await this.chatService.getUserChats(req.user.userName);
+
     const chatsPopulated = await Promise.all(
       chats.map(async (chat) => {
         const messages = await this.messagesService.getMessagesPerChat(
@@ -44,5 +48,10 @@ export class ChatController {
       ),
     );
     return chatsPopulated;
+  }
+
+  @Post('/group')
+  createGroupChat(@Req() req) {
+    this.chatService.create(req.body);
   }
 }

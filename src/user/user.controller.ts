@@ -23,13 +23,16 @@ export class UserController {
     @Req() req,
   ): Promise<User[]> {
     const { searchQuery } = query;
-    console.log(searchQuery, 'here');
     return this.userService.searchUsers(searchQuery, req.user.userName);
   }
 
   @Post('/addFriend')
   addFriend(@Body() body, @Req() req) {
-    console.log(body.friend, req.user.userName);
     return this.userService.addFriend(body.friend, req.user.userName);
+  }
+
+  @Get('/userFriends')
+  getUserFriends(@Req() req): Promise<User[]> {
+    return this.userService.getUserFriends(req.user.userName);
   }
 }

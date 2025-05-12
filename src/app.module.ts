@@ -14,6 +14,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { UserMiddleware } from './middleware/user.middleware';
 import { ChatModule } from './chat/chat.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ChatModule } from './chat/chat.module';
     }),
     AuthModule,
     ChatModule,
+    CloudinaryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -21,10 +21,12 @@ export class MessageService {
     message: string,
     id: string,
     chatID: string,
+    imageUrl?: string,
   ): Promise<Message> {
     const newMessage = new this.messageModel({
       body: message,
       sender: id,
+      imageUrl,
       chat: chatID,
     });
     return newMessage.save();

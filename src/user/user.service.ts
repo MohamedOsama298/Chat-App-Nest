@@ -32,8 +32,6 @@ export class UserService {
         userFriends = doc.friends;
       });
 
-    console.log('here', userFriends);
-
     return this.userModel
       .find(
         {
@@ -57,8 +55,6 @@ export class UserService {
   }
 
   async addFriend(friend: string, requestSender: string) {
-    console.log(requestSender, friend);
-
     const session = await this.userModel.startSession();
     try {
       await session.withTransaction(async () => {
@@ -76,14 +72,12 @@ export class UserService {
           [
             {
               type: 'Private',
-              members: [requestSender, friend],
+              members: [{ userName: requestSender }, { userName: friend }],
               name: 'private',
             },
           ],
           { session },
         );
-
-        console.log(transact1, transact2);
 
         if (!(transact1.modifiedCount || transact2.modifiedCount)) {
           throw new HttpException(
@@ -93,13 +87,19 @@ export class UserService {
         }
       });
     } catch (err) {
+      console.log(err);
       throw new HttpException(
         'Seems like this user is already a friend',
         HttpStatus.BAD_REQUEST,
       );
-      console.log(err);
     } finally {
       session.endSession();
     }
+  }
+
+  async getUserFriends(userName: string): Promise<User[]> {
+    return await this.userModel
+      .find({ userName }, { _id: 0, friends: 1 })
+      .exec();
   }
 }
