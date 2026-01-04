@@ -23,8 +23,12 @@ export class MessageController {
   ) {}
 
   @Get('')
-  getMessages(@Query() qr): Promise<Message[]> {
-    return this.messageService.getMessagesPerChat(qr.chatID);
+  getMessages(@Query() qr): Promise<{ data: Message[]; totalPages: number }> {
+    return this.messageService.getMessagesPerChat(
+      qr.chatID,
+      qr.pageNum,
+      qr.pageSize,
+    );
   }
 
   @Post()
@@ -45,7 +49,6 @@ export class MessageController {
     )
     image: Express.Multer.File,
   ): Promise<Message> {
-    console.log(image);
     let imageurl;
     if (image) imageurl = await this.cloudinaryService.uploadFile(image);
     if (imageurl)

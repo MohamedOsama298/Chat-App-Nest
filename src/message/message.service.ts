@@ -10,11 +10,24 @@ export class MessageService {
   ) {}
   private readonly messages: Message[] = [];
 
-  getMessagesPerChat(chatId: string): Promise<Message[]> {
-    return this.messageModel
+  async getMessagesPerChat(
+    chatId: string,
+    pageNum: number = 1,
+    pageSize: number = 10,
+  ): Promise<{ data: Message[]; totalPages: number }> {
+    const totalRecords = await this.messageModel.countDocuments({
+      chat: chatId,
+    });
+
+    const totalPages = Math.ceil(totalRecords / pageSize);
+    const data = await this.messageModel
       .find({ chat: chatId }, { chat: 0, __v: 0, updatedAt: 0 })
+      .skip((pageNum - 1) * pageSize)
+      .limit(pageSize)
       .populate('sender', 'userName -_id')
       .exec();
+
+    return { data, totalPages };
   }
 
   async addMessage(
@@ -30,5 +43,13 @@ export class MessageService {
       chat: chatID,
     });
     return newMessage.save();
+  }
+
+  getChatLastMessage(chatID: string) {
+    return this.messageModel
+      .findOne({ chat: chatID }, { chat: 0, __v: 0, updatedAt: 0 })
+      .sort({ createdAt: -1 })
+      .populate('sender', 'userName -_id')
+      .exec();
   }
 }

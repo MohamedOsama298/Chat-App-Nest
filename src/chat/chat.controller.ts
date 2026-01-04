@@ -23,22 +23,15 @@ export class ChatController {
 
     const chatsPopulated = await Promise.all(
       chats.map(async (chat) => {
-        const messages = await this.messagesService.getMessagesPerChat(
-          chat._id,
-        );
-        let updatedAt;
-        if (messages.length > 0) {
-          updatedAt = messages ? messages[messages.length - 1].createdAt : null;
-        } else {
-          updatedAt = chat.updatedAt;
-        }
+        const message = await this.messagesService.getChatLastMessage(chat._id);
+        const updatedAt = message ? message.createdAt : chat.updatedAt;
         return {
           chatID: chat._id,
           name: chat.name,
           type: chat.type,
           members: chat.members,
           updatedAt: updatedAt,
-          messages,
+          lastMessage: message,
         };
       }),
     );

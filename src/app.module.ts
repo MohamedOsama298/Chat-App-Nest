@@ -20,10 +20,12 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
   imports: [
     UserModule,
     MessageModule,
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     EventsModule,
     MongooseModule.forRoot(process.env.MONGO_CONNETCTION_STRING, {
-      dbName: 'ChatApp',
+      dbName: process.env.DBNAME,
     }),
     AuthModule,
     ChatModule,
